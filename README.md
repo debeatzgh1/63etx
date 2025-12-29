@@ -1,704 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Debeatzgh Iframe Carousel</title>
+<meta charset="UTF-8">
+<title>Multi-Tab Launcher Generator – Creator OS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-  body { margin:0; font-family: Arial, sans-serif; background:#f5f5f5; }
-
-  @keyframes heartbeat {0%{transform:translateX(-50%) scale(1);}25%{transform:translateX(-50%) scale(1.08);}50%{transform:translateX(-50%) scale(1);}75%{transform:translateX(-50%) scale(1.08);}100%{transform:translateX(-50%) scale(1);}}
-
-  #floating-btn {
-    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-    width: 60px; height: 60px; background:#007bff; color:#fff;
-    font-size:28px; display:flex; align-items:center; justify-content:center;
-    cursor:pointer; border-radius:50%; box-shadow:0 4px 12px rgba(0,0,0,0.3);
-    opacity:0; animation:heartbeat 2.5s infinite ease-in-out; transition:opacity 0.8s; z-index:9999;
-  }
-
-  #carousel-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(4px); z-index:9998; }
-  .carousel-content { position:relative; width:100%; height:100%; padding:50px 0; box-sizing:border-box; }
-  .carousel-slide { display:none; width:100%; height:100%; text-align:center; }
-  .carousel-slide.active { display:block; }
-  .carousel-thumb { width:200px; border-radius:12px; margin-bottom:12px; }
-  .carousel-title { font-size:20px; font-weight:700; color:#fff; margin-bottom:8px; }
-  .carousel-desc { font-size:14px; color:#eee; margin-bottom:12px; }
-  .carousel-btn { padding:10px 20px; background:#16a34a; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700; }
-  .close-btn { position:absolute; top:15px; right:20px; font-size:32px; color:#fff; cursor:pointer; z-index:10; }
-  .carousel-nav { position:absolute; bottom:40px; left:50%; transform:translateX(-50%); display:flex; gap:15px; }
-  .nav-btn { background:#fff; border:none; padding:10px 16px; border-radius:10px; font-weight:700; cursor:pointer; }
+:root{
+  --red:#dc2626;
+  --yellow:#facc15;
+  --green:#16a34a;
+  --dark:#020617;
+}
+body{
+  margin:0;
+  font-family:system-ui,Arial,sans-serif;
+  background:#0f172a;
+  color:#e5e7eb;
+}
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
+h1,h2{margin:8px 0}
+.card{
+  background:#020617;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
+}
+.selector button{
+  margin:6px;
+  padding:10px 16px;
+  border:none;
+  border-radius:999px;
+  background:#2563eb;
+  color:#fff;
+  cursor:pointer;
+}
+.launcher{
+  border:1px dashed #334155;
+  border-radius:14px;
+  padding:12px;
+  margin-top:12px;
+}
+label{
+  font-size:13px;
+  opacity:.8;
+  display:block;
+  margin-top:10px;
+}
+input,select,textarea{
+  width:100%;
+  padding:9px;
+  margin-top:6px;
+  border-radius:10px;
+  border:none;
+  background:#020617;
+  color:#fff;
+  outline:1px solid #1e293b;
+}
+textarea{min-height:70px}
+.copy{
+  background:#16a34a;
+  border:none;
+  padding:10px 16px;
+  border-radius:999px;
+  color:#fff;
+  cursor:pointer;
+}
+.output textarea{
+  height:260px;
+  font-family:monospace;
+  font-size:12px;
+}
+.preview{
+  min-height:120px;
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.preview button{
+  width:48px;height:48px;
+  border-radius:50%;
+  border:none;
+  font-size:18px;
+}
+.footer{
+  text-align:center;
+  opacity:.6;
+  font-size:13px;
+}
 </style>
 </head>
+
 <body>
+<div class="container">
 
-<div id="floating-btn">+</div>
+<h1>⚙️ Multi-Tab Launcher Generator</h1>
+<p>Select how many launchers you want. Each launcher can hold unlimited links.</p>
 
-<div id="carousel-modal">
-  <div class="carousel-content">
-    <span class="close-btn">×</span>
+<!-- SELECTOR -->
+<div class="card selector">
+<h2>1️⃣ Choose Number of Launchers</h2>
+<div id="launcherButtons"></div>
+</div>
 
-    <div class="carousel-slide active" data-url="https://msha.ke/debeatzgh">
-      <img class="carousel-thumb" src="https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/designadigitalproductse-commerceonlinedeals3545265155247625100.jpg" />
-      <div class="carousel-title">Website</div>
-      <div class="carousel-desc">Check out our main website for digital products and deals.</div>
-      <button class="carousel-btn" onclick="openIframe('https://msha.ke/debeatzgh')">Open Website</button>
-    </div>
+<!-- BUILDER -->
+<div class="card">
+<h2>2️⃣ Configure Launchers</h2>
+<div id="builder"></div>
+</div>
 
-    <div class="carousel-slide" data-url="https://debeatzgh.wordpress.com/">
-      <img class="carousel-thumb" src="https://debeatzgh.wordpress.com/wp-content/uploads/2025/12/1763148379311_1619032177476517720.jpg" />
-      <div class="carousel-title">Blog</div>
-      <div class="carousel-desc">Visit our blog for latest updates, guides, and news.</div>
-      <button class="carousel-btn" onclick="openIframe('https://debeatzgh.wordpress.com/')">Open Blog</button>
-    </div>
+<!-- PREVIEW -->
+<div class="card">
+<h2>👁 Live Preview</h2>
+<div class="preview" id="preview"></div>
+</div>
 
-    <div class="carousel-slide" data-url="https://github.com/apps/dkonsult">
-      <img class="carousel-thumb" src="https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/wp-17550753355015215823208011315422.jpg" />
-      <div class="carousel-title">Sign Up</div>
-      <div class="carousel-desc">Sign up for the GitHub app directly in a new tab.</div>
-      <button class="carousel-btn" onclick="window.open('https://github.com/apps/dkonsult','_blank')">Sign Up (New Tab)</button>
-    </div>
+<!-- OUTPUT -->
+<div class="card output">
+<h2>📄 Generated Script</h2>
+<textarea id="output"></textarea><br><br>
+<button class="copy" onclick="copyCode()">📋 Copy Script</button>
+</div>
 
-    <div class="carousel-nav">
-      <button class="nav-btn" id="prev">Prev</button>
-      <button class="nav-btn" id="next">Next</button>
-    </div>
-  </div>
+<div class="footer">
+Creator OS Launcher Factory • Designed by Debeatzgh
+</div>
+
 </div>
 
 <script>
-// Show floating button after 3 seconds
-setTimeout(()=>{document.getElementById('floating-btn').style.opacity='1';},3000);
+const launcherButtons=document.getElementById("launcherButtons");
+const builder=document.getElementById("builder");
+const preview=document.getElementById("preview");
+const output=document.getElementById("output");
 
-const btn = document.getElementById('floating-btn');
-const modal = document.getElementById('carousel-modal');
-const slides = modal.querySelectorAll('.carousel-slide');
-let current=0;
+const colors={
+ red:"var(--red)",
+ yellow:"var(--yellow)",
+ green:"var(--green)"
+};
 
-btn.onclick=()=>{ modal.style.display='block'; showSlide(current); };
-
-function showSlide(index){
-  slides.forEach((slide,i)=>{
-    slide.classList.toggle('active',i===index);
-    if(i===2) slide.querySelector('button').onclick=()=>{ window.open('https://github.com/apps/dkonsult','_blank'); };
-  });
+// Create selector buttons 1–10
+for(let i=1;i<=10;i++){
+  const b=document.createElement("button");
+  b.textContent=i+" Launcher"+(i>1?"s":"");
+  b.onclick=()=>buildLaunchers(i);
+  launcherButtons.appendChild(b);
 }
 
-document.getElementById('prev').onclick=()=>{ current=(current-1+slides.length)%slides.length; showSlide(current); };
-document.getElementById('next').onclick=()=>{ current=(current+1)%slides.length; showSlide(current); };
-
-modal.querySelector('.close-btn').onclick=()=>{ modal.style.display='none'; };
-modal.onclick=e=>{ if(e.target===modal) modal.style.display='none'; };
-
-function openIframe(url){
-  const iframe = document.createElement('iframe');
-  iframe.src=url;
-  iframe.style.width='100%'; iframe.style.height='100%'; iframe.style.border='none';
-  const content = modal.querySelector('.carousel-content');
-  content.innerHTML=''; content.appendChild(iframe);
+function buildLaunchers(count){
+  builder.innerHTML="";
+  for(let i=1;i<=count;i++){
+    const div=document.createElement("div");
+    div.className="launcher";
+    div.innerHTML=`
+      <h3>Launcher ${i}</h3>
+      <label>Button Caption</label>
+      <input id="cap${i}" value="☰">
+      <label>Launcher Title</label>
+      <input id="title${i}" value="Launcher ${i}">
+      <label>Theme Color</label>
+      <select id="color${i}">
+        <option value="red">Red</option>
+        <option value="yellow">Yellow</option>
+        <option value="green">Green</option>
+      </select>
+      <label>Links (one per line)</label>
+      <textarea id="links${i}">https://example.com</textarea>
+    `;
+    builder.appendChild(div);
+  }
+  generate(count);
 }
 
-// Open external ads in new tab inside iframe (if same origin)
+function generate(count){
+  let html="",buttons="";
+  preview.innerHTML="";
+
+  for(let i=1;i<=count;i++){
+    const cap=document.getElementById(`cap${i}`).value;
+    const col=document.getElementById(`color${i}`).value;
+    buttons+=`
+      <button style="background:${colors[col]}" onclick="openLauncher(${i})">${cap}</button>
+    `;
+    preview.innerHTML+=`
+      <button style="background:${colors[col]}">${cap}</button>
+    `;
+  }
+
+  html+=`
+<style>
+.cos-btn{position:fixed;right:16px;top:50%;transform:translateY(-50%);
+display:flex;flex-direction:column;gap:10px;z-index:99999}
+.cos-btn button{width:48px;height:48px;border-radius:50%;border:none;font-size:18px}
+#cos-view{position:fixed;inset:0;background:#000c;display:none;z-index:99998}
+#cos-view iframe{width:100%;height:100%;border:none}
+</style>
+
+<div class="cos-btn">${buttons}</div>
+<div id="cos-view"><iframe id="cos-frame"></iframe></div>
+
+<script>
+function openLauncher(n){
+ document.getElementById("cos-view").style.display="block";
+ document.getElementById("cos-frame").src=links[n][0];
+}
+document.getElementById("cos-view").onclick=()=>{cos-view.style.display="none"};
+const links={};
+`;
+
+  for(let i=1;i<=count;i++){
+    const links=document.getElementById(`links${i}`).value.split("\n").filter(Boolean);
+    html+=`links[${i}]=${JSON.stringify(links)};\n`;
+  }
+
+  html+="<\/script>";
+  output.value=html;
+}
+
+function copyCode(){
+  output.select();
+  document.execCommand("copy");
+  alert("Launcher script copied!");
+}
 </script>
 
 </body>
 </html>
-
-
-<style>
-  /* 🌟 Floating Button Animation */
-  @keyframes fadeSlideUp {
-    0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
-    100% { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
-
-  .floating-btn-group {
-    animation: fadeSlideUp 0.6s ease-out;
-  }
-
-  .floating-btn-group a:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease;
-  }
-
-  /* 🌟 Iframe Modal */
-  #iframe-modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 115%;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-  }
-
-  .modal-content {
-    position: relative;
-    margin: 2% auto;
-    background: #fff;
-    border-radius: 16px;
-    width: 95%;
-    height: 90%;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    overflow: hidden;
-    animation: fadeIn 0.3s ease;
-  }
-
-  #modal-iframe {
-    width: 100%;
-    height: 105%;
-    border: none;
-  }
-
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 18px;
-    font-size: 30px;
-    color: #333;
-    cursor: pointer;
-    transition: color 0.2s;
-    z-index: 10;
-  }
-
-  .close-btn:hover {
-    color: #e11d48;
-  }
-
-  @keyframes fadeIn {
-    from {opacity: 0; transform: translateY(-10px);}
-    to {opacity: 1; transform: translateY(0);}
-  }
-</style>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  // 🔹 Create Floating Button Group
-  const btnGroup = document.createElement("div");
-  btnGroup.className = "floating-btn-group";
-  Object.assign(btnGroup.style, {
-    position: "fixed",
-    bottom: "16px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    display: "flex",
-    gap: "10px",
-    zIndex: "9999",
-    background: "rgba(0,0,0,0.1)",
-    padding: "6px 10px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
-    opacity: "0",
-    animation: "fadeSlideUp 0.6s ease-out forwards"
-  });
-
-  // -------------------------------------------------------
-  // ✅ BUTTONS INCLUDING NEW “IDEAS” BUTTON
-  // -------------------------------------------------------
-  const buttons = [
-    {
-      text: "🔥 Blog",
-      bg: "#1e90ff",
-      url: "https://beatzde4.blogspot.com/"
-    },
-    {
-      text: "📌 Feed",
-      bg: "#16a34a",
-      url: "https://debeatzgh.wordpress.com/"
-    },
-    {
-      text: "💡 Ideas",
-      bg: "#c026d3",
-      url: "https://msha.ke/debeatzgh"
-    }
-  ];
-
-  // 🔹 Create Iframe Modal
-  const modal = document.createElement("div");
-  modal.id = "iframe-modal";
-  modal.innerHTML = `
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <iframe id="modal-iframe" src="" loading="lazy"></iframe>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  // 🔹 Add Buttons to Page
-  buttons.forEach(function (btn) {
-    const a = document.createElement("a");
-    a.href = "#";
-    a.innerText = btn.text;
-    Object.assign(a.style, {
-      background: btn.bg,
-      color: "#fff",
-      padding: "8px 14px",
-      borderRadius: "20px",
-      textDecoration: "none",
-      fontSize: "13px",
-      fontWeight: "600",
-      whiteSpace: "nowrap",
-      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.2)",
-      transition: "opacity 0.3s ease, transform 0.3s ease"
-    });
-
-    a.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.getElementById("modal-iframe").src = btn.url;
-      document.getElementById("iframe-modal").style.display = "block";
-    });
-
-    btnGroup.appendChild(a);
-  });
-
-  document.body.appendChild(btnGroup);
-
-  // 🔹 Close Modal
-  document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("close-btn") || e.target.id === "iframe-modal") {
-      modal.style.display = "none";
-      document.getElementById("modal-iframe").src = "";
-    }
-  });
-
-  // 🔹 Auto-open external ads in new tab safely
-  document.getElementById("modal-iframe").addEventListener("load", function () {
-    try {
-      const links = this.contentDocument.querySelectorAll("a");
-      links.forEach(link => {
-        if (!link.href.includes("debeatzgh.wordpress.com")) {
-          link.setAttribute("target", "_blank");
-          link.setAttribute("rel", "noopener");
-        }
-      });
-    } catch (err) {
-      console.warn("External site - cannot rewrite links");
-    }
-  });
-
-});
-</script>
-
-# **👋 Hi, I'm David Kumah (DebeatzGH)**
-
-### *AI Tools Builder • UI/UX Creator • Digital Products Developer • Tech Blogger*
-
-<p align="center">
-  <img src="https://github.com/debeatzgh1.png" width="140" style="border-radius:50%">
-</p>
-
----
-
-# **📚 Mini Blog Post Library (10–20 Posts)**
-
-### *A curated collection of my tutorials, ideas, tools & UI/UX content*
-
----
-
-## **📝 1. The Future of AI Tools for Creators**
-
-A breakdown of how creators can build income streams using micro automations, AI templates, and workflow tools.
-
----
-
-## **📝 2. 10 Profitable AI Side Hustles You Can Start Today**
-
-Easy-to-launch tech ideas for beginners, students, and creators using free and low-cost tools.
-
----
-
-## **📝 3. How to Build a Micro SaaS Using Only AI Tools**
-
-Step-by-step guide showing the workflow from idea → branding → landing page → automation.
-
----
-
-## **📝 4. UI/UX Widgets That Boost Landing Page Conversion**
-
-Top-performing design components with clean HTML/CSS examples.
-
----
-
-## **📝 5. My Weekly AI Tool Stack for Productivity & Design**
-
-The exact tools I use for automation, editing, research, and content.
-
----
-
-## **📝 6. How to Create Stunning Animated Buttons Using CSS**
-
-A detailed mini tutorial for developers who want to add playful micro-interactions.
-
----
-
-## **📝 7. Building Your First Online Digital Product Shop**
-
-A clean strategy showing setup, pricing, branding, and why GitHub Pages is perfect.
-
----
-
-## **📝 8. AI Prompts That Help Students & Creators Work Faster**
-
-A powerful list of prompts for writing, research, video scripts, and UI design.
-
----
-
-## **📝 9. Why Every Creator Needs a GitHub Pages Portfolio**
-
-A full explanation of how GitHub Pages can be used as a free website builder.
-
----
-
-## **📝 10. 5 UI Layouts You Can Copy for Your Next Project**
-
-Minimal, modern layouts with headers, hero sections, and CTA examples.
-
----
-
-## **📝 11. A Creator’s Guide to Automating Repetitive Tasks**
-
-Examples of tasks you can fully automate using AI + browser workflows.
-
----
-
-## **📝 12. How to Package & Sell Templates as Digital Products**
-
-A structured guide for designing, pricing, packaging, and promoting digital assets.
-
----
-
-## **📝 13. My Ultimate Blogging Starter Toolkit**
-
-Includes writing prompts, content templates, SEO tips, and automation hacks.
-
----
-
-## **📝 14. Turning Your Slides Into Professional Videos Automatically**
-
-Explains your slide-to-video AI tool concept and the workflow behind it.
-
----
-
-## **📝 15. UI/UX Mistakes Most Beginners Make (And How to Fix Them)**
-
-A simple way to redesign poor layouts into clean modern interfaces.
-
----
-
-## **📝 16. 20 GitHub Projects Every Beginner Should Try**
-
-A curated list to help students and new developers build real skills.
-
----
-
-## **📝 17. Creating a Brand Identity Using Only AI Tools**
-
-How to build logos, color palettes, typefaces, and mockups with free tools.
-
----
-
-## **📝 18. Unlocking the Power of GitHub for Non-Coders**
-
-Teaches beginners how to use GitHub for blogging, documentation, and websites.
-
----
-
-## **📝 19. Why Every UI/UX Designer Should Post on LinkedIn**
-
-Explains LinkedIn growth strategy with practical weekly posting ideas.
-
----
-
-## **📝 20. How to Build Your First Mini SaaS From 0 → 1**
-
-A complete beginner-friendly guide for your audience.
-
----
-
-# **🎨 What I Create**
-
-I design and build:
-
-* 🎨 **UI/UX Widgets**
-* 🖥 **Mini Landing Pages**
-* 🤖 **AI Tools & Automation Workflows**
-* 📝 **Tech + Side Hustle Tutorials**
-* 🎬 **Short Dev Videos**
-
----
-
-# **🧰 Tech Stack**
-
-<p align="center">
-<img src="https://img.shields.io/badge/HTML-FF4B23?style=for-the-badge&logo=html5&logoColor=white"/>
-<img src="https://img.shields.io/badge/CSS-254BDD?style=for-the-badge&logo=css3&logoColor=white"/>
-<img src="https://img.shields.io/badge/JavaScript-FCDC00?style=for-the-badge&logo=javascript&logoColor=black"/>
-<img src="https://img.shields.io/badge/AI_Tools-6A00FF?style=for-the-badge&logo=openai&logoColor=white"/>
-<img src="https://img.shields.io/badge/GitHub_Pages-000000?style=for-the-badge&logo=githubpages&logoColor=white"/>
-</p>
-
----
-
-# **⭐ Featured Projects**
-
-### 🔹 Side Hustle Starter Kit
-
-👉 [https://debeatzgh1.github.io/Side-hustle-starter-kit-/](https://debeatzgh1.github.io/Side-hustle-starter-kit-/)
-
-### 🔹 Curated AI Business & Product Guides
-
-👉 [https://debeatzgh1.github.io/Curated-Guides-for-Online-Business-AI-Product-Creation/](https://debeatzgh1.github.io/Curated-Guides-for-Online-Business-AI-Product-Creation/)
-
-### 🔹 Digital Products Affiliate Shop
-
-👉 [https://debeatzgh1.github.io/-My-Brand-Online-Digital-Products-Affiliate-Shop/](https://debeatzgh1.github.io/-My-Brand-Online-Digital-Products-Affiliate-Shop/)
-
----
-
-# **📬 Connect With Me**
-
-<p align="center">
-  <a href="https://www.linkedin.com/in/david-kumah-ab7392299">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white"/>
-  </a>
-  <a href="https://debeatzgh1.github.io/">
-    <img src="https://img.shields.io/badge/Portfolio-000000?style=for-the-badge&logo=githubpages&logoColor=white"/>
-  </a>
-  <a href="https://beatzde4.blogspot.com/">
-    <img src="https://img.shields.io/badge/Blog-FF5722?style=for-the-badge&logo=blogger&logoColor=white"/>
-  </a>
-</p>
-
----
-
-# **🎯 Need a Custom UI, Landing Page, or AI Tool?**
-
-<p align="center">
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSec8llbmfgq_2cVxpdk0M9zi2BtNUT4_IjqFVkbM1RCApV3Gw/viewform?usp=publish-editor">
-    <img src="https://img.shields.io/badge/Order%20a%20Custom%20Design-6C63FF?style=for-the-badge"/>
-  </a>
-</p>
-
----
-
-
----
-
-# 📂 Blogger Scripts Catalog
-
-![Blogger Scripts Catalog Cover](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/designacleanmodernthumbnailforabloggerproductscarouseltool1711994558720457535.jpg)
-
-A curated collection of **Blogger-friendly scripts, widgets, and templates** — designed to improve your blog’s design, engagement, and user experience.
-Each project comes with a **live GitHub Pages demo**, thumbnail, and quick action button so you can see the script in action.
-
----
-
-## 🚀 Live Catalog
-
-| Thumbnail                                                                                                                                                                                                                                                  | Project                                                                                                                                                      | Description                                                                                                         | Action                                                                                                           |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| ![Custom Blogger Theme](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/generateamobile-firstresponsivebloggertemplatewithcustomizablecolorsfontsandsections1576324612066211977.jpg)                                                            | **[Custom Blogger Theme with Dynamic Post Loading and Logo](https://debeatzgh1.github.io/Custom-Blogger-Theme-for-with-Dynamic-Post-Loading-and-Logo-/)**    | A responsive, mobile-first Blogger theme with customizable sections, dynamic post loading, and custom logo support. | [🔗 View Demo](https://debeatzgh1.github.io/Custom-Blogger-Theme-for-with-Dynamic-Post-Loading-and-Logo-/)       |
-| ![Popup Generator](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/createatoolthatgeneratesiframeorcard-styleembedsforindividualbloggerpostscompletewiththumbnailtitleandreadmorebuttonforcross-blogpromotion754077096311972631.jpg)            | **[Popup HTML Page Generator](https://debeatzgh1.github.io/popup-html-page-generator-blogger/)**                                                             | Easily generate iframe or card-style embeds for individual Blogger posts with thumbnails and read-more buttons.     | [🔗 View Demo](https://debeatzgh1.github.io/popup-html-page-generator-blogger/)                                  |
-| ![Newsletter Widget](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/amodernflat-styleillustrationofanotificationbellwithglowinghighlightssurroundedbyabstractshapespaperenvelopesanddigitalicons28emailmessageupdate293314991682681990671.jpg) | **[Sliding Newsletter Signup Widget](https://debeatzgh1.github.io/Sliding-Newsletter-Signup-Widget-with-Pulse-Animation/)**                                  | A modern newsletter signup widget with sliding animation and pulsing notification highlights.                       | [🔗 View Demo](https://debeatzgh1.github.io/Sliding-Newsletter-Signup-Widget-with-Pulse-Animation/)              |
-| ![Product Carousel](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/designacleanmodernthumbnailforabloggerproductscarouseltool1711994558720457535.jpg)                                                                                          | **[Blogger Product Carousel with WhatsApp Floating Button](https://debeatzgh1.github.io/Blogger-Product-Carousel-with-WhatsApp-Floating-Button/)**           | Showcase Blogger products in a responsive carousel with a built-in WhatsApp floating button for instant contact.    | [🔗 View Demo](https://debeatzgh1.github.io/Blogger-Product-Carousel-with-WhatsApp-Floating-Button/)             |
-| ![Floating Dock](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/amodernminimallayoutwithafloatingdockofcolorfulroundicons28patreonbloggergithub29ontherightsideofacleanwebpagemockup6676994054500999142.jpg)                                   | **[Floating Dock Smart Iframe Modal](https://debeatzgh1.github.io/-Floating-Dock-Smart-Iframe-Modal/)**                                                      | A modern floating dock with colorful round icons and iframe modal integration.                                      | [🔗 View Demo](https://debeatzgh1.github.io/-Floating-Dock-Smart-Iframe-Modal/)                                  |
-| ![Tailwind Homepage](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/createamodernandcleanthumbnailforawebdevelopmentproducttitledmodernhomepagestylingtemplatewithtailwindcss3420170625469385526.jpg)                                          | **[Modern Homepage Styling with TailwindCSS](https://debeatzgh1.github.io/Modern-homepage-styling-with-TailwindCSS-/)**                                      | A clean and modern homepage layout template styled with TailwindCSS.                                                | [🔗 View Demo](https://debeatzgh1.github.io/Modern-homepage-styling-with-TailwindCSS-/)                          |
-| ![TechAdapt Solutions](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/wp-17550417188267308669484942620808.jpg)                                                                                                                                 | **[TechAdapt Solutions – Strategies for Modern Startups](https://debeatzgh1.github.io/TechAdapt-Solutions-Strategies-for-Modern-Startups-and-Individuals/)** | Practical strategies, resources, and tools for startups and individuals adapting to the modern digital world.       | [🔗 View Demo](https://debeatzgh1.github.io/TechAdapt-Solutions-Strategies-for-Modern-Startups-and-Individuals/) |
-
----
-
-## 🛠️ Features
-
-* ✅ Fully responsive designs
-* ✅ Blogger-friendly & easy to embed
-* ✅ Lightweight, no heavy dependencies
-* ✅ Includes floating buttons, modals, and animations
-* ✅ Perfect for enhancing engagement & monetization
-
----
-
-## 📌 Explore More Scripts
-
-👉 Check out the full curated collection here:
-[**Firebase Curated Front-End Components**](https://github.com/debeatzgh1/firebase-front-end-components)
-
----
-
-## 💡 Contribution
-
-Want to suggest improvements or add your own scripts?
-
-* Open an **issue**
-* Submit a **pull request**
-* Share your ideas in the discussions
-
----
-
-## 📜 License
-
-This project is released under the **MIT License** – free to use, modify, and share with attribution.
-
----
-
-✨ Designed for creators, bloggers, and developers who want to level up their Blogger sites with modern UI components.
-
----
-
-
-# 🌐 Personal Portfolio Website
-
-A simple and responsive personal portfolio website built with **HTML, CSS, and JavaScript**.  
-This project is perfect for showcasing your skills, projects, and contact information.  
-
-Live Demo 👉 [View Portfolio](https://debeatzgh.github.io/portfolio-site/)
-
----
-
-## ✨ Features
-- Responsive design (works on mobile & desktop)  
-- Navigation bar with smooth scrolling  
-- Hero section with intro & call-to-action button  
-- About section with bio details  
-- Projects section with cards  
-- Contact section with email & social links  
-- **Dark mode toggle** 🌙☀️  
-
----
-
-## 🛠️ Technologies Used
-- **HTML5** – Structure  
-- **CSS3** – Styling & Responsive design  
-- **JavaScript (Vanilla)** – Interactivity (dark mode toggle)  
-- **GitHub Pages** – Free hosting & deployment  
-
----
-
-## 🚀 Getting Started
-To run this project locally:  
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/debeatzgh1/portfolio-site.git
-
-# 🚀 DeBeatzGH – AI Tools & Side Hustle Hub  
-
-![DeBeatzGH Thumbnail](https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/designamodernminimalisticdesignfeaturinganai-themedicon28likeabraincircuitorrobot29overlaidwithdebeatzghoraitoolshustles6089986211026037047.jpg)  
-
-## 🌟 About  
-Welcome to **[DeBeatzGH](https://debeatzgh.wordpress.com/)** — your go-to hub for **AI tools, side hustle strategies, blogging resources, and digital growth guides**.  
-
-Our platform is built to help **students, creators, startups, and professionals** unlock the power of AI, monetize their skills, and thrive in today’s digital economy.  
-
-### ✨ What You’ll Find  
-- 💡 Explore **AI prompts, tools, and hacks**  
-- 📈 Discover **side hustle strategies & online income ideas**  
-- ✍️ Access **blogging & digital business guides**  
-- 🚀 Stay ahead with **regular updates and fresh insights**  
-
----
-
-## 👉 Get Started  
-🔥 **Start your journey today → [Visit DeBeatzGH]([https://debeatzgh.wordpress.com/](https://www.patreon.com/debeatzgh/collections))**  
-
----
-
-
-<!-- README: DebeatzGH Digital Store (HTML-friendly for GitHub) -->
-<div align="center">
-  <a href="https://www.socialcreator.com/debeatzgh" target="_blank" rel="noopener">
-    <img
-      src="https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/designadigitalproductse-commerceonlinedeals3545265155247625100.jpg"
-      alt="DebeatzGH Digital Store"
-      style="max-width:100%; border-radius:16px;"
-    />
-  </a>
-
-  <h1 style="margin-top: 14px;">DebeatzGH Digital Store</h1>
-  <p style="max-width:780px;">
-    Your hub for AI insights, tech tutorials, side-hustle playbooks, and productivity tools.
-    Learn, build, and launch digital projects faster.
-  </p>
-
-  <!-- CTAs -->
-  <p>
-    <a href="https://www.socialcreator.com/debeatzgh" target="_blank" rel="noopener"
-       style="display:inline-block; padding:10px 16px; margin:4px; border-radius:999px; text-decoration:none; font-weight:600; border:1px solid #2563eb;">
-      🚀 View Live App
-    </a>
-    <a href="https://github.com/debeatzgh1/Personal-Portfolio-site-" target="_blank" rel="noopener"
-       style="display:inline-block; padding:10px 16px; margin:4px; border-radius:999px; text-decoration:none; font-weight:600; border:1px solid #111827;">
-      ⭐ Star this Repo
-    </a>
-  </p>
-</div>
-
-<hr/>
-
-<h2>Overview</h2>
-<p>
-  <strong>DebeatzGH</strong> helps beginners and creators build profitable digital assets:
-  blogs, affiliate funnels, AI-assisted content, and more. Explore tutorials, tools, and
-  ready-to-use components to speed up your workflow.
-</p>
-
-<h2>Features</h2>
-<ul>
-  <li><strong>AI & Tech Learning:</strong> Bite-sized guides for modern tools and workflows.</li>
-  <li><strong>Side-Hustle Playbooks:</strong> Practical steps to validate and launch ideas.</li>
-  <li><strong>Productivity Toolkit:</strong> Reusable widgets, templates, and scripts.</li>
-  <li><strong>Beginner-Friendly:</strong> Clear explanations, curated resources, and examples.</li>
-</ul>
-
-<h2>Quick Start</h2>
-<ol>
-  <li>Clone:
-    <pre><code>git clone https://github.com/debeatzgh1/Personal-Portfolio-site-</code></pre>
-  </li>
-  <li>Enter folder:
-    <pre><code>cd debeatzgh</code></pre>
-  </li>
-  <li>Install deps (adjust to your stack):
-    <pre><code># Node
-npm install
-npm run dev
-
-# or Python
-pip install -r requirements.txt
-python app.py</code></pre>
-  </li>
-  <li>Open in browser:
-    <pre><code>http://localhost:3000</code></pre>
-  </li>
-</ol>
-
-<h2>Project Links</h2>
-<ul>
-  <li>🌐 Live App: <a href="https://www.socialcreator.com/debeatzgh" target="_blank" rel="noopener">socialcreator.com/debeatzgh</a></li>
-  <li>🖼️ Thumbnail: <a href="https://debeatzgh.wordpress.com/wp-content/uploads/2025/08/designadigitalproductse-commerceonlinedeals3545265155247625100.jpg" target="_blank" rel="noopener">View image</a></li>
-</ul>
-
-<h2>Contributing</h2>
-<p>
-  Contributions are welcome! Open an issue for bugs or ideas. For changes, fork the repo,
-  create a feature branch, and submit a pull request.
-</p>
-
-<h2>License</h2>
-<p>
-  Released under the <a href="./LICENSE">MIT License</a>.
-</p>
-
-<hr/>
-
-<div align="center">
-  <p><em>If this project helps you, consider giving it a star. It really helps! ⭐</em></p>
-  <p>
-    <a href="https://www.socialcreator.com/debeatzgh/?s=314768" target="_blank" rel="noopener"
-       style="display:inline-block; padding:10px 16px; margin-top:6px; border-radius:10px; text-decoration:none; font-weight:600; border:1px solid #2563eb;">
-      PRODUCTS →
-    </a>
-  </p>
-</div>
